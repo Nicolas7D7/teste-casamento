@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casamento Nicolas & [Nome]</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+
+/* =============================== */
+/* ===== CONFIGURAÇÃO BASE ===== */
+/* =============================== */
+
+:root {
+  --azul: #0d1b2a;
+  --azul-claro: #1b263b;
+  --dourado: #c9a227;
+  --branco: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+  background: var(--azul);
+}
+
+/* =============================== */
+/* ===== SEÇÃO 1 - ENVELOPE ===== */
+/* =============================== */
+
+.envelope-section {
+  height: 200vh; /* importante para permitir animação */
+  position: relative;
+}
+
+.envelope-container {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  background: var(--azul);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Envelope (apenas visual) */
+.envelope-bg {
+  width: 500px;
+  height: 300px;
+  background: #e5e5e5;
+  position: absolute;
+  bottom: 20%;
+  border-radius: 4px;
+}
+
+/* Carta (Convite real) */
+.letter {
+  width: 450px;
+  height: 600px;
+  background: white;
+  position: absolute;
+  bottom: 20%;
+  border-radius: 6px;
+  padding: 40px;
+  text-align: center;
+  transform: translateY(150px);
+  transition: transform 0.2s linear;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.letter h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 40px;
+  color: var(--azul);
+}
+
+.letter p {
+  margin-top: 20px;
+}
+
+/* =============================== */
+/* ===== CONTEÚDO RESTANTE ===== */
+/* =============================== */
+
+.content {
+  background: white;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+</style>
+</head>
+<body>
+
+<!-- ================================== -->
+<!-- ===== ENVELOPE / ANIMAÇÃO ===== -->
+<!-- ================================== -->
+
+<section class="envelope-section">
+  <div class="envelope-container">
+    <div class="envelope-bg"></div>
+
+    <div class="letter" id="letter">
+      <h1>Nicolas & [Nome]</h1>
+      <p>“Assim, eles já não são dois, mas uma só carne.”</p>
+      <p><strong>Mateus 19:6</strong></p>
+      <p>12 de Outubro de 2026</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================================== -->
+<!-- ===== RESTO DO SITE ===== -->
+<!-- ================================== -->
+
+<section class="content">
+  <h2>Bem-vindos ao nosso casamento</h2>
+  <p>Aqui começam os detalhes do grande dia.</p>
+</section>
+
+<!-- ================================== -->
+<!-- ===== SCRIPT DA ANIMAÇÃO ===== -->
+<!-- ================================== -->
+
+<script>
+
+const letter = document.getElementById("letter");
+
+window.addEventListener("scroll", () => {
+
+  const scrollY = window.scrollY;
+  const maxScroll = window.innerHeight;
+
+  let progress = scrollY / maxScroll;
+
+  if (progress > 1) progress = 1;
+  if (progress < 0) progress = 0;
+
+  // Move a carta para cima conforme scroll
+  letter.style.transform = `translateY(${150 - (progress * 300)}px)`;
+
+});
+
+</script>
+
+</body>
+</html>
