@@ -56,7 +56,7 @@ body {
 
 .letter {
   width: 450px;
-  height: 600px;
+  height: 350px;
   background: white;
   position: absolute;
   bottom: 25%;
@@ -96,7 +96,7 @@ body {
 
 .envelope-flap {
   width: 500px;
-  height: 300px;
+  height: 298px;
   background: var(--envelope-sombra);
   position: absolute;
   bottom: 25%;
@@ -171,7 +171,7 @@ window.addEventListener("scroll", () => {
 
   /* Envelope vai sumindo conforme abre */
   base.style.opacity = 1 - progress;
-  flap.style.opacity = 1 - (progress * 0.8);
+  flap.style.opacity = 1 - (progress * 1);
 
 });
 
