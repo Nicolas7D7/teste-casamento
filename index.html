@@ -9,15 +9,14 @@
 
 <style>
 
-/* =============================== */
+/* ============================= */
 /* ===== CONFIGURAÇÃO BASE ===== */
-/* =============================== */
+/* ============================= */
 
 :root {
   --azul: #0d1b2a;
-  --azul-claro: #1b263b;
-  --dourado: #c9a227;
-  --branco: #ffffff;
+  --envelope: #e5e5e5;
+  --envelope-sombra: #d6d6d6;
 }
 
 * {
@@ -32,49 +31,42 @@ body {
   background: var(--azul);
 }
 
-/* =============================== */
-/* ===== SEÇÃO 1 - ENVELOPE ===== */
-/* =============================== */
+/* ============================= */
+/* ===== ÁREA DE ANIMAÇÃO ===== */
+/* ============================= */
 
 .envelope-section {
-  height: 200vh; /* importante para permitir animação */
+  height: 200vh;
   position: relative;
 }
 
-.envelope-container {
+.sticky-container {
   position: sticky;
   top: 0;
   height: 100vh;
-  background: var(--azul);
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  perspective: 1000px;
 }
 
-/* Envelope (apenas visual) */
-.envelope-bg {
-  width: 500px;
-  height: 300px;
-  background: #e5e5e5;
-  position: absolute;
-  bottom: 20%;
-  border-radius: 4px;
-}
+/* ============================= */
+/* ===== CARTA (ATRÁS) ===== */
+/* ============================= */
 
-/* Carta (Convite real) */
 .letter {
   width: 450px;
   height: 600px;
   background: white;
   position: absolute;
-  bottom: 20%;
-  border-radius: 6px;
-  padding: 40px;
+  bottom: 25%;
+  border-radius: 8px;
+  padding: 50px;
   text-align: center;
-  transform: translateY(150px);
-  transition: transform 0.2s linear;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  transform: translateY(250px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+  z-index: 1; /* Fica atrás */
+  transition: transform 0.1s linear;
 }
 
 .letter h1 {
@@ -83,13 +75,41 @@ body {
   color: var(--azul);
 }
 
-.letter p {
-  margin-top: 20px;
+/* ============================= */
+/* ===== ENVELOPE BASE (NA FRENTE) ===== */
+/* ============================= */
+
+.envelope-base {
+  width: 500px;
+  height: 300px;
+  background: var(--envelope);
+  position: absolute;
+  bottom: 25%;
+  border-radius: 6px;
+  z-index: 3; /* Fica na frente da carta */
+  transition: opacity 0.2s linear;
 }
 
-/* =============================== */
-/* ===== CONTEÚDO RESTANTE ===== */
-/* =============================== */
+/* ============================= */
+/* ===== ABA DO ENVELOPE ===== */
+/* ============================= */
+
+.envelope-flap {
+  width: 500px;
+  height: 300px;
+  background: var(--envelope-sombra);
+  position: absolute;
+  bottom: 25%;
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  transform-origin: top;
+  transform: rotateX(0deg);
+  z-index: 4; /* Mais na frente ainda */
+  transition: transform 0.1s linear, opacity 0.2s linear;
+}
+
+/* ============================= */
+/* ===== RESTO DO SITE ===== */
+/* ============================= */
 
 .content {
   background: white;
@@ -101,14 +121,11 @@ body {
 </head>
 <body>
 
-<!-- ================================== -->
-<!-- ===== ENVELOPE / ANIMAÇÃO ===== -->
-<!-- ================================== -->
-
 <section class="envelope-section">
-  <div class="envelope-container">
-    <div class="envelope-bg"></div>
 
+  <div class="sticky-container">
+
+    <!-- CARTA (fica atrás) -->
     <div class="letter" id="letter">
       <h1>Nicolas & [Nome]</h1>
       <p>“Assim, eles já não são dois, mas uma só carne.”</p>
@@ -116,25 +133,26 @@ body {
       <p>12 de Outubro de 2026</p>
     </div>
 
-  </div>
-</section>
+    <!-- BASE DO ENVELOPE (na frente) -->
+    <div class="envelope-base" id="base"></div>
 
-<!-- ================================== -->
-<!-- ===== RESTO DO SITE ===== -->
-<!-- ================================== -->
+    <!-- ABA DO ENVELOPE (mais na frente) -->
+    <div class="envelope-flap" id="flap"></div>
+
+  </div>
+
+</section>
 
 <section class="content">
   <h2>Bem-vindos ao nosso casamento</h2>
   <p>Aqui começam os detalhes do grande dia.</p>
 </section>
 
-<!-- ================================== -->
-<!-- ===== SCRIPT DA ANIMAÇÃO ===== -->
-<!-- ================================== -->
-
 <script>
 
+const flap = document.getElementById("flap");
 const letter = document.getElementById("letter");
+const base = document.getElementById("base");
 
 window.addEventListener("scroll", () => {
 
@@ -142,12 +160,18 @@ window.addEventListener("scroll", () => {
   const maxScroll = window.innerHeight;
 
   let progress = scrollY / maxScroll;
-
   if (progress > 1) progress = 1;
   if (progress < 0) progress = 0;
 
-  // Move a carta para cima conforme scroll
-  letter.style.transform = `translateY(${150 - (progress * 300)}px)`;
+  /* Abrir aba */
+  flap.style.transform = `rotateX(${-180 * progress}deg)`;
+
+  /* Carta sobe de dentro */
+  letter.style.transform = `translateY(${250 - (progress * 450)}px)`;
+
+  /* Envelope vai sumindo conforme abre */
+  base.style.opacity = 1 - progress;
+  flap.style.opacity = 1 - (progress * 0.8);
 
 });
 
