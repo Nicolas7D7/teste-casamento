@@ -3,118 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Casamento Nicolas & [Nome]</title>
+<title>Casamento Nicolas & Phamyla</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 
 <style>
 
-/* ============================= */
-/* ===== CONFIGURAÇÃO BASE ===== */
-/* ============================= */
+/* =============================== */
+/* CONFIGURAÇÃO BASE */
+/* =============================== */
 
-:root {
-  --azul: #0d1b2a;
-  --envelope: #e5e5e5;
-  --envelope-sombra: #d6d6d6;
+:root{
+  --azul:#0d1b2a;
+  --papel:#f5f5f5;
+  --sombra:#e0e0e0;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
 }
 
-body {
-  font-family: 'Montserrat', sans-serif;
-  overflow-x: hidden;
-  background: var(--azul);
+body{
+  font-family:'Montserrat',sans-serif;
+  background:var(--azul);
+  overflow-x:hidden;
 }
 
-/* ============================= */
-/* ===== ÁREA DE ANIMAÇÃO ===== */
-/* ============================= */
+/* =============================== */
+/* ÁREA DE ANIMAÇÃO */
+/* =============================== */
 
-.envelope-section {
-  height: 200vh;
-  position: relative;
+.envelope-section{
+  height:250vh;
+  position:relative;
 }
 
-.sticky-container {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  perspective: 1000px;
+.sticky{
+  position:sticky;
+  top:0;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:1200px;
 }
 
-/* ============================= */
-/* ===== CARTA (ATRÁS) ===== */
-/* ============================= */
+/* =============================== */
+/* CARTA */
+/* =============================== */
 
-.letter {
-  width: 450px;
-  height: 350px;
-  background: white;
-  position: absolute;
-  bottom: 25%;
-  border-radius: 8px;
-  padding: 50px;
-  text-align: center;
-  transform: translateY(250px);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.4);
-  z-index: 1; /* Fica atrás */
-  transition: transform 0.1s linear;
+.letter{
+  width:320px;
+  height:450px;
+  background:white;
+  position:absolute;
+  bottom:5%;
+  border-radius:6px;
+  padding:30px;
+  text-align:center;
+  transform:translateY(120px);
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
+  z-index:2;
+  transition:transform 0.1s linear;
 }
 
-.letter h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 40px;
-  color: var(--azul);
+/* dobra visual da carta */
+.letter::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:40px;
+  background:linear-gradient(to bottom, #eaeaea, white);
 }
 
-/* ============================= */
-/* ===== ENVELOPE BASE (NA FRENTE) ===== */
-/* ============================= */
+/* =============================== */
+/* ENVELOPE BASE (FUNDO) */
+/* =============================== */
 
-.envelope-base {
-  width: 500px;
-  height: 300px;
-  background: var(--envelope);
-  position: absolute;
-  bottom: 25%;
-  border-radius: 6px;
-  z-index: 3; /* Fica na frente da carta */
-  transition: opacity 0.2s linear;
+.envelope-back{
+  width:360px;
+  height:220px;
+  background:var(--papel);
+  position:absolute;
+  bottom:30%;
+  border-radius:4px;
+  z-index:1;
 }
 
-/* ============================= */
-/* ===== ABA DO ENVELOPE ===== */
-/* ============================= */
+/* =============================== */
+/* FRENTE DO ENVELOPE (RECORTE) */
+/* =============================== */
 
-.envelope-flap {
-  width: 500px;
-  height: 298px;
-  background: var(--envelope-sombra);
-  position: absolute;
-  bottom: 25%;
-  clip-path: polygon(0 0, 100% 0, 50% 60%);
-  transform-origin: top;
-  transform: rotateX(0deg);
-  z-index: 4; /* Mais na frente ainda */
-  transition: transform 0.1s linear, opacity 0.2s linear;
+.envelope-front{
+  width:360px;
+  height:220px;
+  background:var(--sombra);
+  position:absolute;
+  bottom:30%;
+  border-radius:4px;
+ clip-path: polygon(30% 30%, 70% 30%, 100% 5%, 100% 100%, 0 100%, 0 5%);
+  z-index:3;
 }
 
-/* ============================= */
-/* ===== RESTO DO SITE ===== */
-/* ============================= */
+/* =============================== */
+/* ABA SUPERIOR */
+/* =============================== */
 
-.content {
-  background: white;
-  padding: 100px 20px;
-  text-align: center;
+.envelope-flap{
+  width:360px;
+  height:220px;
+  background:#dcdcdc;
+  position:absolute;
+  bottom:30%;
+clip-path: polygon(100% 0, 100% 15%, 50% 55%, 0 15%, 0 0);
+  transform-origin:top;
+  transform:rotateX(0deg);
+  z-index:4;
+  transition:transform 0.1s linear;
+}
+
+/* =============================== */
+/* RESTO DO SITE */
+/* =============================== */
+
+.content{
+  background:white;
+  padding:100px 20px;
+  text-align:center;
+}
+
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:32px;
+  color:var(--azul);
+}
+
+p{
+  margin-top:15px;
+  font-size:14px;
 }
 
 </style>
@@ -123,20 +153,19 @@ body {
 
 <section class="envelope-section">
 
-  <div class="sticky-container">
+  <div class="sticky">
 
-    <!-- CARTA (fica atrás) -->
+    <!-- CARTA -->
     <div class="letter" id="letter">
-      <h1>Nicolas & [Nome]</h1>
+      <h1>Nicolas & Phamyla</h1>
       <p>“Assim, eles já não são dois, mas uma só carne.”</p>
       <p><strong>Mateus 19:6</strong></p>
-      <p>12 de Outubro de 2026</p>
+      <p>31 de Outubro de 2026</p>
     </div>
 
-    <!-- BASE DO ENVELOPE (na frente) -->
-    <div class="envelope-base" id="base"></div>
-
-    <!-- ABA DO ENVELOPE (mais na frente) -->
+    <!-- ENVELOPE -->
+    <div class="envelope-back"></div>
+    <div class="envelope-front"></div>
     <div class="envelope-flap" id="flap"></div>
 
   </div>
@@ -152,26 +181,24 @@ body {
 
 const flap = document.getElementById("flap");
 const letter = document.getElementById("letter");
-const base = document.getElementById("base");
 
 window.addEventListener("scroll", () => {
 
-  const scrollY = window.scrollY;
-  const maxScroll = window.innerHeight;
+  let progress = Math.min(window.scrollY / window.innerHeight, 1);
 
-  let progress = scrollY / maxScroll;
-  if (progress > 1) progress = 1;
-  if (progress < 0) progress = 0;
+  /* ABA DO ENVELOPE */
+  flap.style.transform = `rotateX(${-220 * progress}deg)`;
 
-  /* Abrir aba */
-  flap.style.transform = `rotateX(${-180 * progress}deg)`;
+  if (progress > 0.5) {
+    flap.style.zIndex = 0;
+  } else {
+    flap.style.zIndex = 4;
+  }
 
-  /* Carta sobe de dentro */
-  letter.style.transform = `translateY(${250 - (progress * 450)}px)`;
+  /* CARTA (começa depois) */
+  let letterProgress = Math.max((progress - 0.3) / 0.7, 0);
 
-  /* Envelope vai sumindo conforme abre */
-  base.style.opacity = 1 - progress;
-  flap.style.opacity = 1 - (progress * 1);
+  letter.style.transform = `translateY(${120 - (letterProgress * 420)}px)`;
 
 });
 
