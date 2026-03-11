@@ -36,14 +36,14 @@ body{
 /* =============================== */
 
 .envelope-section{
-  height:250vh;
+  height:calc(var(--vh) * 250);
   position:relative;
 }
 
 .sticky{
   position:sticky;
   top:0;
-  height:100vh;
+  height:calc(var(--vh) * 100);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -67,6 +67,9 @@ body{
   box-shadow:0 20px 40px rgba(0,0,0,0.4);
   z-index:2;
   transition:transform 0.1s linear;
+
+  /* melhora performance mobile */
+  will-change: transform;
 }
 
 /* dobra visual da carta */
@@ -81,7 +84,7 @@ body{
 }
 
 /* =============================== */
-/* ENVELOPE BASE (FUNDO) */
+/* ENVELOPE BASE */
 /* =============================== */
 
 .envelope-back{
@@ -95,7 +98,7 @@ body{
 }
 
 /* =============================== */
-/* FRENTE DO ENVELOPE (RECORTE) */
+/* FRENTE DO ENVELOPE */
 /* =============================== */
 
 .envelope-front{
@@ -105,7 +108,7 @@ body{
   position:absolute;
   bottom:30%;
   border-radius:4px;
- clip-path: polygon(30% 30%, 70% 30%, 100% 5%, 100% 100%, 0 100%, 0 5%);
+  clip-path: polygon(30% 30%, 70% 30%, 100% 5%, 100% 100%, 0 100%, 0 5%);
   z-index:3;
 }
 
@@ -119,11 +122,14 @@ body{
   background:#dcdcdc;
   position:absolute;
   bottom:30%;
-clip-path: polygon(100% 0, 100% 15%, 50% 55%, 0 15%, 0 0);
+  clip-path: polygon(100% 0, 100% 15%, 50% 55%, 0 15%, 0 0);
   transform-origin:top;
   transform:rotateX(0deg);
   z-index:4;
   transition:transform 0.1s linear;
+
+  /* melhora performance */
+  will-change: transform;
 }
 
 /* =============================== */
@@ -145,6 +151,27 @@ h1{
 p{
   margin-top:15px;
   font-size:14px;
+}
+
+/* =============================== */
+/* RESPONSIVO MOBILE */
+/* =============================== */
+
+@media (max-width:600px){
+
+.letter{
+  width:280px;
+  height:400px;
+  padding:25px;
+}
+
+.envelope-back,
+.envelope-front,
+.envelope-flap{
+  width:320px;
+  height:200px;
+}
+
 }
 
 </style>
@@ -179,12 +206,33 @@ p{
 
 <script>
 
+/* ================================= */
+/* CORREÇÃO DE ALTURA REAL MOBILE */
+/* ================================= */
+
+function setRealViewportHeight() {
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+setRealViewportHeight();
+
+window.addEventListener('resize', setRealViewportHeight);
+
+/* ================================= */
+/* ANIMAÇÃO DO ENVELOPE */
+/* ================================= */
+
 const flap = document.getElementById("flap");
 const letter = document.getElementById("letter");
+const section = document.querySelector(".envelope-section");
 
 window.addEventListener("scroll", () => {
 
-  let progress = Math.min(window.scrollY / window.innerHeight, 1);
+  const rect = section.getBoundingClientRect();
+  const sectionHeight = section.offsetHeight - window.innerHeight;
+
+  let progress = Math.min(Math.max(-rect.top / sectionHeight,0),1);
 
   /* ABA DO ENVELOPE */
   flap.style.transform = `rotateX(${-220 * progress}deg)`;
@@ -195,7 +243,7 @@ window.addEventListener("scroll", () => {
     flap.style.zIndex = 4;
   }
 
-  /* CARTA (começa depois) */
+  /* CARTA */
   let letterProgress = Math.max((progress - 0.3) / 0.7, 0);
 
   letter.style.transform = `translateY(${120 - (letterProgress * 420)}px)`;
