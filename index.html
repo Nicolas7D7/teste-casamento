@@ -2,255 +2,1898 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Casamento Nicolas & Phamyla</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Nicolas & Phamyla — 31.10.2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Dancing+Script:wght@500;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+ 
 <style>
+/*
+  VERSÃO COMENTADA EM PORTUGUÊS
+  ------------------------------------------------------------
+  Este arquivo é um convite de casamento feito com HTML, CSS e JavaScript.
+  - HTML: estrutura do conteúdo
+  - CSS: visual, layout e animações
+  - JavaScript: interações e comportamento dinâmico
 
-/* =============================== */
-/* CONFIGURAÇÃO BASE */
-/* =============================== */
+  Mantive o código original e acrescentei observações para você entender
+  o que cada bloco faz e onde editar depois.
+*/
 
-:root{
-  --azul:#0d1b2a;
-  --papel:#f5f5f5;
-  --sombra:#e0e0e0;
+/* ============================================================
+   VARIÁVEIS GLOBAIS E RESET
+   ============================================================ */
+/*
+  Aqui ficam as variáveis globais de estilo.
+  Se quiser trocar paleta de cores, fontes ou curva de animação,
+  normalmente é aqui que você começa.
+*/
+:root {
+  --ink:    #0e1117;
+  --cream:  #f8f5f0;
+  --gold:   #b09060;
+  --gold-l: #d4b88a;
+  --stone:  #e8e3db;
+  --muted:  #7a7670;
+  --white:  #ffffff;
+ 
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans:  'Jost', sans-serif;
+ 
+  --ease-out-expo: cubic-bezier(0.16,1,0.3,1);
+}
+ 
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+ 
+html { scroll-behavior: smooth; }
+ 
+/*
+  Configuração base da página inteira.
+*/
+body {
+  font-family: var(--sans);
+  background: var(--ink);
+  color: var(--cream);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+ 
+/* ============================================================
+   BARRA DE ROLAGEM
+   ============================================================ */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--ink); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+ 
+/* ============================================================
+   UTILITÁRIOS
+   ============================================================ */
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); }
+ 
+/* ============================================================
+   SEÇÃO: HERO — ANIMAÇÃO DO ENVELOPE EM TELA CHEIA
+   ============================================================ */
+/*
+  Esta é a área principal da animação inicial.
+  O valor 500vh cria uma rolagem longa para a abertura do envelope acontecer aos poucos.
+*/
+#hero {
+  position: relative;
+  height: 420vh; /* scroll mais longo para a revelação do site por trás do envelope */
+}
+ 
+/*
+  Camada que fica fixa na tela enquanto o usuário rola.
+  Isso permite controlar a animação pelo scroll sem a seção sair de vista.
+*/
+.hero-sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  perspective: 1400px;
+}
+ 
+/* linhas decorativas de fundo */
+.hero-sticky::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 49.8%, rgba(176,144,96,0.05) 50%, transparent 50.2%),
+    linear-gradient(0deg,  transparent 49.8%, rgba(176,144,96,0.05) 50%, transparent 50.2%);
+  background-size: 80px 80px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+
+/* ---- SITE POR TRÁS DO ENVELOPE ---- */
+/*
+  Esta camada já é o começo do site.
+  Ela fica atrás do envelope e sobe com o scroll,
+  como se o conteúdo estivesse sendo revelado de dentro dele.
+*/
+.hero-site {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  transform: translateY(38vh) scale(0.98);
+  transform-origin: center top;
+  will-change: transform;
+}
+
+.hero-site-inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+ 
+/* ---- CONTAINER DO ENVELOPE — começa em tela cheia ---- */
+/*
+  Container principal do envelope.
+  Ele começa grande, centralizado e depois diminui conforme a animação avança.
+*/
+.envelope-wrap {
+  position: absolute;
+  /* centralizado */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* ocupa a tela inteira por padrão */
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+  will-change: transform, opacity;
+  transform-origin: center bottom;
+}
+ 
+/* dobra em V do lado esquerdo */
+.env-back::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 50%; height: 55%;
+  background: #e8e2d8;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+ 
+/* dobra em V do lado direito */
+.env-back::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 50%; height: 55%;
+  background: #e4ddd3;
+  clip-path: polygon(0 100%, 100% 0, 100% 100%);
+}
+ 
+/* ---- FRENTE DO ENVELOPE (V inferior) ---- */
+.env-front {
+  position: absolute;
+  inset: 0;
+  background: #ede8e0;
+  background-image: linear-gradient(170deg, #ede8e0 0%, #e5dfd6 100%);
+  clip-path: polygon(100% 100%, 100% 18%, 50% 38%, 0 18%, 0 100%);
+  z-index: 3;
+}
+ 
+/* ornamento central */
+.env-front::after {
+  content: '✦';
+  position: absolute;
+  /* centralizado na área inferior em V */
+  bottom: 14%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(14px, 2.5vw, 22px);
+  color: var(--gold);
+  opacity: 0.6;
+}
+ 
+/* ---- ABA DO ENVELOPE (triângulo superior) ---- */
+.env-flap {
+  position: absolute;
+  inset: 0;
+  background: #ddd8cf;
+  background-image: linear-gradient(175deg, #d4cfc6 0%, #cbc5bc 60%, #e0dbd2 100%);
+ clip-path: polygon(100% 0, 100% 20%, 50% 40%, 0 20%, 0 0);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  z-index: 4;
+  will-change: transform;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+ 
+/* sombra interna da aba triangular */
+.env-flap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.06) 0%, transparent 50%);
+  clip-path: polygon(99% 0, 99% 19%, 49% 39%, 0 19%, 0 0);
+  pointer-events: none;
+}
+ 
+/* selo de cera */
+.env-seal {
+  position: absolute;
+  top: clamp(10px, 3vh, 28px);
+  left: 50%;
+  transform: translateX(-50%) translateZ(1px);
+  width: clamp(36px, 6vw, 64px);
+  height: clamp(36px, 6vw, 64px);
+  background: radial-gradient(circle at 38% 32%, #d4aa6a, #7a5520);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(14px, 2.5vw, 26px);
+  color: rgba(255,255,255,0.9);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+  z-index: 5;
+  pointer-events: none;
+}
+ 
+/* ---- ORDEM DAS CAMADAS DO ENVELOPE ---- */
+/*
+  O conteúdo do site fica na camada 2.
+  O fundo do envelope fica atrás dele.
+  A frente e a aba ficam por cima, para dar o efeito de revelação.
+*/
+.env-back { z-index: 1; }
+.env-front { z-index: 5; }
+.env-flap { z-index: 7; }
+
+/* ---- INDICADOR DE ROLAGEM ---- */
+.scroll-hint {
+  position: absolute;
+  bottom: clamp(24px, 5vh, 48px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.5s;
+}
+ 
+.scroll-hint span {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(248,245,240,0.5);
+}
+ 
+.scroll-arrow {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+ 
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(1) translateY(0); }
+  50%       { opacity: 1;   transform: scaleY(1.1) translateY(4px); }
+}
+ 
+/* ============================================================
+   SEÇÃO: TEXTO DE ABERTURA
+   ============================================================ */
+/*
+  Estilo visual do topo do site, que agora fica atrás do envelope.
+*/
+#intro {
+  background: var(--cream);
+  color: var(--ink);
+  padding: 100px 24px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+ 
+#intro::before {
+  content: 'N & P';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-size: 160px;
+  font-weight: 300;
+  color: rgba(14,17,23,0.04);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+ 
+.intro-tag {
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+}
+ 
+.intro-title {
+  font-family: var(--serif);
+  font-size: clamp(40px, 8vw, 72px);
+  font-weight: 300;
+  line-height: 1.1;
+  margin-bottom: 24px;
+}
+ 
+.intro-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+ 
+.intro-verse {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+  color: var(--muted);
+  max-width: 420px;
+  margin: 0 auto 8px;
+  line-height: 1.7;
+}
+ 
+.intro-ref {
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+ 
+/* ============================================================
+   SEÇÃO: CONTAGEM REGRESSIVA
+   ============================================================ */
+/*
+  Seção da contagem regressiva.
+  Os números são atualizados via JavaScript.
+*/
+#countdown {
+  background: var(--ink);
+  padding: 80px 24px;
+  text-align: center;
+  position: relative;
+}
+ 
+.section-tag {
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  opacity: 0.8;
+}
+ 
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 5vw, 42px);
+  font-weight: 300;
+  margin-bottom: 48px;
+  color: var(--cream);
+}
+ 
+.section-title em { font-style: italic; color: var(--gold); }
+ 
+.countdown-grid {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  max-width: 600px;
+  margin: 0 auto;
+}
+ 
+.cd-block {
+  flex: 1 1 100px;
+  max-width: 130px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(176,144,96,0.2);
+  border-radius: 3px;
+  padding: 24px 12px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+ 
+.cd-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0.6;
+}
+ 
+.cd-num {
+  font-family: var(--serif);
+  font-size: 52px;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--cream);
+  display: block;
+  min-width: 2ch;
+}
+ 
+.cd-label {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 8px;
+  display: block;
+}
+ 
+/* ============================================================
+   SEÇÃO: DETALHES
+   ============================================================ */
+/*
+  Informações práticas do evento: data, horário, local e traje.
+*/
+#details {
+  background: var(--cream);
+  color: var(--ink);
+  padding: 80px 24px;
+}
+ 
+.details-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+ 
+.details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(14,17,23,0.1);
+  border: 1px solid rgba(14,17,23,0.1);
+  margin-top: 40px;
+}
+ 
+@media (max-width: 500px) {
+  .details-grid { grid-template-columns: 1fr; }
+}
+ 
+.detail-cell {
+  background: var(--cream);
+  padding: 36px 28px;
+  position: relative;
+}
+ 
+.detail-icon {
+  font-size: 20px;
+  margin-bottom: 12px;
+  display: block;
+  opacity: 0.6;
+}
+ 
+.detail-label {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+ 
+.detail-value {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 300;
+  line-height: 1.3;
+  color: var(--ink);
+}
+ 
+.detail-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+ 
+/* ============================================================
+   SEÇÃO: GALERIA
+   ============================================================ */
+/*
+  Área da galeria de fotos.
+  Hoje ela está com espaços reservados (placeholders).
+*/
+#gallery {
+  background: var(--ink);
+  padding: 80px 0;
+}
+ 
+.gallery-header {
+  text-align: center;
+  padding: 0 24px 48px;
+}
+ 
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 3px;
+}
+ 
+@media (max-width: 600px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+ 
+.gallery-item {
+  aspect-ratio: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(176,144,96,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.4s var(--ease-out-expo);
+}
+ 
+.gallery-item:hover { transform: scale(0.98); }
+ 
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out-expo), filter 0.4s;
+  filter: grayscale(30%) brightness(0.9);
+}
+ 
+.gallery-item:hover img {
+  transform: scale(1.04);
+  filter: grayscale(0%) brightness(1);
+}
+ 
+.gallery-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+ 
+.gallery-placeholder span { font-size: 22px; opacity: 0.4; }
+.gallery-placeholder p { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.4; }
+ 
+/* lightbox (visualização ampliada) */
+/*
+  Lightbox = visualização ampliada da imagem por cima da página.
+*/
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.92);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+ 
+.lightbox.active { opacity: 1; pointer-events: all; }
+ 
+.lightbox img {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 2px;
+}
+ 
+.lightbox-close {
+  position: absolute;
+  top: 24px; right: 24px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+ 
+.lightbox-close:hover { background: rgba(255,255,255,0.1); }
+ 
+/* ============================================================
+   SEÇÃO: MAPA
+   ============================================================ */
+/*
+  Seção com o mapa incorporado do local do evento.
+*/
+#map-section {
+  background: var(--cream);
+  color: var(--ink);
+  padding: 80px 24px;
+}
+ 
+.map-inner {
+  max-width: 680px;
+  margin: 0 auto;
+  text-align: center;
+}
+ 
+.map-frame {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: none;
+  border-radius: 3px;
+  margin-top: 40px;
+  filter: grayscale(40%) contrast(1.05);
+  box-shadow: 0 20px 60px rgba(14,17,23,0.12);
+}
+ 
+.map-address {
+  margin-top: 24px;
+  font-family: var(--serif);
+  font-size: 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+ 
+.map-cta {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 32px;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: background 0.3s, color 0.3s;
+}
+ 
+.map-cta:hover { background: var(--gold); color: var(--white); }
+ 
+/* ============================================================
+   SEÇÃO: RSVP
+   ============================================================ */
+/*
+  Seção do formulário de confirmação de presença.
+*/
+#rsvp {
+  background: var(--ink);
+  padding: 80px 24px 100px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+ 
+/* texto decorativo grande ao fundo */
+#rsvp::before {
+  content: '31.10';
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--serif);
+  font-size: 200px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.02);
+  white-space: nowrap;
+  pointer-events: none;
+}
+ 
+.rsvp-form {
+  max-width: 480px;
+  margin: 40px auto 0;
+  text-align: left;
+}
+ 
+.form-group {
+  margin-bottom: 20px;
+}
+ 
+.form-label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+ 
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px;
+  color: var(--cream);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 300;
+  transition: border-color 0.3s, background 0.3s;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+ 
+.form-select { cursor: pointer; }
+ 
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  border-color: var(--gold);
+  background: rgba(255,255,255,0.06);
+}
+ 
+.form-textarea { resize: vertical; min-height: 80px; }
+ 
+.form-select option { background: var(--ink); color: var(--cream); }
+ 
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+ 
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+ 
+.rsvp-submit {
+  width: 100%;
+  padding: 16px;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  margin-top: 8px;
+  transition: background 0.3s, color 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+ 
+.rsvp-submit:hover {
+  background: var(--gold);
+  color: var(--ink);
+}
+ 
+.rsvp-success {
+  display: none;
+  text-align: center;
+  padding: 32px;
+  border: 1px solid rgba(176,144,96,0.3);
+  border-radius: 3px;
+  margin-top: 40px;
+}
+ 
+.rsvp-success.visible { display: block; }
+ 
+.rsvp-success-icon { font-size: 32px; margin-bottom: 12px; }
+.rsvp-success h3 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 8px;
+}
+ 
+.rsvp-success p { font-size: 13px; color: var(--muted); }
+ 
+/* ============================================================
+   RODAPÉ
+   ============================================================ */
+/*
+  Rodapé final da página.
+*/
+footer {
+  background: var(--ink);
+  border-top: 1px solid rgba(176,144,96,0.15);
+  padding: 32px 24px;
+  text-align: center;
+}
+ 
+.footer-names {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 300;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+ 
+.footer-date {
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+ 
+/* ============================================================
+   NAVEGAÇÃO
+   ============================================================ */
+/*
+  Menu fixo superior.
+  Ele some durante a animação inicial para não poluir a tela.
+*/
+#nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+ 
+#nav.hidden { opacity: 0; }
+ 
+.nav-inner {
+  display: flex;
+  gap: 28px;
+  background: rgba(14,17,23,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(176,144,96,0.15);
+  border-radius: 40px;
+  padding: 10px 24px;
+  pointer-events: all;
+}
+ 
+.nav-link {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+ 
+.nav-link:hover { color: var(--gold); }
+ 
+@media (max-width: 480px) {
+  .nav-inner { gap: 18px; padding: 9px 18px; }
+  .nav-link { font-size: 8px; letter-spacing: 2px; }
+}
+ 
+/* ============================================================
+   REVELAÇÃO AO ROLAR
+   ============================================================ */
+/*
+  Classe usada para fazer elementos aparecerem suavemente quando entram na tela.
+*/
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+}
+ 
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+ 
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+ 
+</style>
+
+<style>
+/* ============================================================
+   AJUSTE VISUAL — IDENTIDADE INSPIRADA NO PDF
+   ============================================================ */
+
+:root{
+  --ink: #34456a;
+  --cream: #f9f5ef;
+  --gold: #234786;
+  --gold-l: #b7c7e1;
+  --stone: #edf1f8;
+  --muted: #6d7f99;
+  --white: #ffffff;
+
+  --paper: #fbf8f2;
+  --paper-2: #f2ece4;
+  --navy: #234786;
+  --navy-soft: #6f89b5;
+  --line: rgba(120, 146, 194, 0.75);
+  --line-soft: rgba(120, 146, 194, 0.26);
+  --shadow-soft: 0 18px 48px rgba(72, 95, 141, 0.12);
+
+  --title-font: 'Dancing Script', cursive;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Jost', sans-serif;
+}
+
+html{
+  background: var(--paper);
 }
 
 body{
-  font-family:'Montserrat',sans-serif;
-  background:var(--azul);
-  overflow-x:hidden;
+  font-family: var(--sans);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 8% 10%, rgba(170, 190, 226, 0.18) 0 48px, transparent 49px),
+    radial-gradient(circle at 12% 17%, rgba(90, 120, 184, 0.10) 0 22px, transparent 23px),
+    radial-gradient(circle at 88% 82%, rgba(170, 190, 226, 0.20) 0 52px, transparent 53px),
+    radial-gradient(circle at 81% 76%, rgba(90, 120, 184, 0.10) 0 20px, transparent 21px),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
+  color: var(--ink);
 }
 
-/* =============================== */
-/* ÁREA DE ANIMAÇÃO */
-/* =============================== */
-
-.envelope-section{
-  height:calc(var(--vh) * 250);
-  position:relative;
+body::before{
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(140, 126, 102, 0.08) 0px,
+      rgba(140, 126, 102, 0.08) 1px,
+      transparent 1px,
+      transparent 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.22) 0px,
+      rgba(255, 255, 255, 0.22) 1px,
+      transparent 1px,
+      transparent 7px
+    );
+  mix-blend-mode: multiply;
+  z-index: 9999;
 }
 
-.sticky{
-  position:sticky;
-  top:0;
-  height:calc(var(--vh) * 100);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  perspective:1200px;
+.hero-sticky::after{
+  background:
+    linear-gradient(90deg, transparent 49.8%, rgba(35,71,134,0.05) 50%, transparent 50.2%),
+    linear-gradient(0deg,  transparent 49.8%, rgba(35,71,134,0.05) 50%, transparent 50.2%);
+  background-size: 86px 86px;
 }
 
-/* =============================== */
-/* CARTA */
-/* =============================== */
-
-.letter{
-  width:320px;
-  height:450px;
-  background:white;
-  position:absolute;
-  bottom:5%;
-  border-radius:6px;
-  padding:30px;
-  text-align:center;
-  transform:translateY(120px);
-  box-shadow:0 20px 40px rgba(0,0,0,0.4);
-  z-index:2;
-  transition:transform 0.1s linear;
-
-  /* melhora performance mobile */
-  will-change: transform;
+.scroll-hint span{
+  color: rgba(35,71,134,0.56);
 }
 
-/* dobra visual da carta */
-.letter::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:40px;
-  background:linear-gradient(to bottom, #eaeaea, white);
+.scroll-arrow{
+  background: linear-gradient(to bottom, var(--navy), transparent);
 }
 
-/* =============================== */
-/* ENVELOPE BASE */
-/* =============================== */
-
-.envelope-back{
-  width:360px;
-  height:220px;
-  background:var(--papel);
-  position:absolute;
-  bottom:30%;
-  border-radius:4px;
-  z-index:1;
+/* HERO / INTRO */
+#intro,
+#countdown,
+#details,
+#gallery,
+#map-section,
+#rsvp,
+footer{
+  color: var(--ink);
+  position: relative;
+  background:
+    radial-gradient(circle at 30px 34px, rgba(143, 168, 212, 0.18) 0 24px, transparent 25px),
+    radial-gradient(circle at 78px 56px, rgba(35,71,134, 0.10) 0 14px, transparent 15px),
+    radial-gradient(circle at 52px 92px, rgba(182, 201, 229, 0.20) 0 18px, transparent 19px),
+    radial-gradient(circle at calc(100% - 34px) calc(100% - 34px), rgba(143, 168, 212, 0.18) 0 26px, transparent 27px),
+    radial-gradient(circle at calc(100% - 80px) calc(100% - 60px), rgba(35,71,134, 0.10) 0 16px, transparent 17px),
+    radial-gradient(circle at calc(100% - 52px) calc(100% - 96px), rgba(182, 201, 229, 0.20) 0 20px, transparent 21px),
+    linear-gradient(180deg, rgba(255,255,255,0.56), rgba(255,255,255,0.28));
+  background-color: transparent;
 }
 
-/* =============================== */
-/* FRENTE DO ENVELOPE */
-/* =============================== */
-
-.envelope-front{
-  width:360px;
-  height:220px;
-  background:var(--sombra);
-  position:absolute;
-  bottom:30%;
-  border-radius:4px;
-  clip-path: polygon(30% 30%, 70% 30%, 100% 5%, 100% 100%, 0 100%, 0 5%);
-  z-index:3;
+#intro::after,
+#countdown::after,
+#details::after,
+#gallery::after,
+#map-section::after,
+#rsvp::after{
+  content: '';
+  position: absolute;
+  inset: 18px;
+  border: 1.5px solid var(--line);
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* =============================== */
-/* ABA SUPERIOR */
-/* =============================== */
-
-.envelope-flap{
-  width:360px;
-  height:220px;
-  background:#dcdcdc;
-  position:absolute;
-  bottom:30%;
-  clip-path: polygon(100% 0, 100% 15%, 50% 55%, 0 15%, 0 0);
-  transform-origin:top;
-  transform:rotateX(0deg);
-  z-index:4;
-  transition:transform 0.1s linear;
-
-  /* melhora performance */
-  will-change: transform;
+#intro > *,
+#countdown > *,
+#details > *,
+#gallery > *,
+#map-section > *,
+#rsvp > *,
+footer > *{
+  position: relative;
+  z-index: 1;
 }
 
-/* =============================== */
-/* RESTO DO SITE */
-/* =============================== */
-
-.content{
-  background:white;
-  padding:100px 20px;
-  text-align:center;
+.hero-site{
+  color: var(--ink);
 }
 
-h1{
-  font-family:'Cormorant Garamond',serif;
-  font-size:32px;
-  color:var(--azul);
+.hero-site-inner{
+  max-width: 760px;
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  padding: 90px 26px;
+  text-align: center;
 }
 
-p{
-  margin-top:15px;
-  font-size:14px;
+#intro{
+  padding: 0;
 }
 
-/* =============================== */
-/* RESPONSIVO MOBILE */
-/* =============================== */
-
-@media (max-width:600px){
-
-.letter{
-  width:280px;
-  height:400px;
-  padding:25px;
+#intro::before{
+  color: rgba(35,71,134,0.08);
+  font-size: clamp(88px, 16vw, 180px);
 }
 
-.envelope-back,
-.envelope-front,
-.envelope-flap{
-  width:320px;
-  height:200px;
+.intro-tag,
+.section-tag,
+.detail-label,
+.cd-label,
+.footer-date,
+.map-cta,
+.form-label,
+.rsvp-submit,
+.intro-ref{
+  color: var(--navy);
+  letter-spacing: 2.8px;
 }
 
+.intro-title,
+.section-title,
+.footer-names{
+  font-family: var(--title-font);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.05;
 }
 
-</style>
-</head>
-<body>
-
-<section class="envelope-section">
-
-  <div class="sticky">
-
-    <!-- CARTA -->
-    <div class="letter" id="letter">
-      <h1>Nicolas & Phamyla</h1>
-      <p>“Assim, eles já não são dois, mas uma só carne.”</p>
-      <p><strong>Mateus 19:6</strong></p>
-      <p>31 de Outubro de 2026</p>
-    </div>
-
-    <!-- ENVELOPE -->
-    <div class="envelope-back"></div>
-    <div class="envelope-front"></div>
-    <div class="envelope-flap" id="flap"></div>
-
-  </div>
-
-</section>
-
-<section class="content">
-  <h2>Bem-vindos ao nosso casamento</h2>
-  <p>Aqui começam os detalhes do grande dia.</p>
-</section>
-
-<script>
-
-/* ================================= */
-/* CORREÇÃO DE ALTURA REAL MOBILE */
-/* ================================= */
-
-function setRealViewportHeight() {
-  let vh = window.innerHeight * 0.01;
-  document.documentElement.style.setProperty('--vh', `${vh}px`);
+.intro-title{
+  font-size: clamp(54px, 10vw, 98px);
+  margin-bottom: 18px;
 }
 
-setRealViewportHeight();
+.intro-title em,
+.section-title em{
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--navy-soft);
+  font-weight: 400;
+}
 
-window.addEventListener('resize', setRealViewportHeight);
+.intro-verse,
+.map-address{
+  font-family: var(--serif);
+  font-size: clamp(17px, 2.2vw, 24px);
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 620px;
+}
 
-/* ================================= */
-/* ANIMAÇÃO DO ENVELOPE */
-/* ================================= */
+.section-title{
+  font-size: clamp(42px, 8vw, 72px);
+  margin-bottom: 34px;
+}
 
-const flap = document.getElementById("flap");
-const letter = document.getElementById("letter");
-const section = document.querySelector(".envelope-section");
+.footer-names{
+  font-size: clamp(34px, 6vw, 56px);
+  margin-bottom: 2px;
+}
 
-window.addEventListener("scroll", () => {
+/* Envelope */
+.env-front{
+  background: linear-gradient(170deg, #f2eee7 0%, #e6ded0 100%);
+  box-shadow: inset 0 0 0 1px rgba(115, 144, 191, 0.18);
+}
 
-  const rect = section.getBoundingClientRect();
-  const sectionHeight = section.offsetHeight - window.innerHeight;
+.env-front::after{
+  color: var(--navy);
+}
 
-  let progress = Math.min(Math.max(-rect.top / sectionHeight,0),1);
+.env-flap{
+  background: linear-gradient(175deg, #efe8de 0%, #ddd3c6 58%, #ebe4da 100%);
+}
 
-  /* ABA DO ENVELOPE */
-  flap.style.transform = `rotateX(${-220 * progress}deg)`;
+.env-seal{
+  background: radial-gradient(circle at 38% 32%, #6c88b7, #234786 70%);
+  box-shadow: 0 8px 24px rgba(35,71,134,0.18), inset 0 1px 0 rgba(255,255,255,0.25);
+}
 
-  if (progress > 0.5) {
-    flap.style.zIndex = 0;
-  } else {
-    flap.style.zIndex = 4;
+/* NAV */
+#nav{
+  padding: 18px;
+}
+
+.nav-inner{
+  background: rgba(251, 248, 242, 0.82);
+  border: 1px solid rgba(120, 146, 194, 0.5);
+  box-shadow: 0 10px 24px rgba(72,95,141,0.10);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.nav-link{
+  color: var(--navy-soft);
+}
+
+.nav-link:hover{
+  color: var(--navy);
+}
+
+/* Sections */
+#countdown,
+#details,
+#gallery,
+#map-section,
+#rsvp{
+  padding-top: 94px;
+  padding-bottom: 94px;
+}
+
+.section-tag{
+  opacity: 1;
+}
+
+.countdown-grid{
+  gap: 16px;
+  max-width: 760px;
+}
+
+.cd-block{
+  background: rgba(255,255,255,0.64);
+  border: 1px solid var(--line);
+  border-radius: 0;
+  box-shadow: var(--shadow-soft);
+  padding: 28px 14px 22px;
+}
+
+.cd-block::before{
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--navy-soft), transparent);
+  opacity: 1;
+}
+
+.cd-num{
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.cd-label{
+  color: var(--muted);
+}
+
+.details-inner,
+.map-inner{
+  max-width: 820px;
+}
+
+.details-grid{
+  gap: 16px;
+  background: transparent;
+  border: 0;
+}
+
+.detail-cell{
+  background: rgba(255,255,255,0.60);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+
+.detail-icon{
+  opacity: 1;
+  color: var(--navy);
+}
+
+.detail-value{
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.detail-sub{
+  color: var(--muted);
+}
+
+.gallery-header{
+  padding-bottom: 32px;
+}
+
+.gallery-grid{
+  gap: 16px;
+  padding: 0 24px;
+  max-width: 980px;
+}
+
+.gallery-item{
+  background: rgba(255,255,255,0.58);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+
+.gallery-item img{
+  filter: saturate(0.92) contrast(1.02) brightness(1.01);
+}
+
+.gallery-placeholder{
+  color: var(--navy-soft);
+}
+
+.gallery-placeholder p{
+  letter-spacing: 2.8px;
+}
+
+.lightbox{
+  background: rgba(36, 52, 84, 0.86);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.lightbox-close{
+  border-color: rgba(255,255,255,0.45);
+}
+
+.map-frame{
+  border-radius: 0;
+  border: 1px solid var(--line);
+  filter: grayscale(18%) contrast(1.02);
+  box-shadow: var(--shadow-soft);
+}
+
+.map-cta,
+.rsvp-submit{
+  background: rgba(255,255,255,0.48);
+  border: 1px solid var(--navy);
+  color: var(--navy);
+  border-radius: 0;
+}
+
+.map-cta:hover,
+.rsvp-submit:hover{
+  background: var(--navy);
+  color: var(--white);
+}
+
+#rsvp::before{
+  color: rgba(35,71,134,0.05);
+  font-family: var(--serif);
+}
+
+.rsvp-form{
+  max-width: 620px;
+  margin-top: 30px;
+}
+
+.form-input,
+.form-select,
+.form-textarea{
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(120, 146, 194, 0.45);
+  color: var(--ink);
+  border-radius: 0;
+}
+
+.form-select option{
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder{
+  color: rgba(109, 127, 153, 0.85);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus{
+  border-color: var(--navy);
+  background: rgba(255,255,255,0.96);
+}
+
+.rsvp-success{
+  background: rgba(255,255,255,0.56);
+  border: 1px solid var(--line);
+  border-radius: 0;
+}
+
+.rsvp-success h3{
+  color: var(--navy);
+  font-family: var(--title-font);
+  font-size: 42px;
+}
+
+.rsvp-success p{
+  color: var(--muted);
+}
+
+footer{
+  border-top: 1px solid var(--line);
+  padding-top: 42px;
+  padding-bottom: 44px;
+}
+
+/* Mobile refinements */
+@media (max-width: 680px){
+  #intro::after,
+  #countdown::after,
+  #details::after,
+  #gallery::after,
+  #map-section::after,
+  #rsvp::after{
+    inset: 10px;
   }
 
-  /* CARTA */
-  let letterProgress = Math.max((progress - 0.3) / 0.7, 0);
+  .hero-site-inner{
+    padding: 86px 22px 68px;
+  }
 
-  letter.style.transform = `translateY(${120 - (letterProgress * 420)}px)`;
+  .countdown-grid,
+  .gallery-grid{
+    gap: 10px;
+  }
 
+  .cd-block,
+  .detail-cell{
+    padding: 24px 16px 20px;
+  }
+
+  .detail-value{
+    font-size: 24px;
+  }
+}
+</style>
+
+</head>
+<body>
+<!--
+  Estrutura principal da página.
+  Cada section representa um bloco visual do convite.
+-->
+ 
+<!-- ============================================================
+     NAVEGAÇÃO
+     ============================================================ -->
+<!--
+  Menu superior com links internos para navegar entre as seções.
+-->
+<nav id="nav" aria-label="Navegação principal">
+  <div class="nav-inner">
+    <a href="#intro"      class="nav-link">Início</a>
+    <a href="#countdown"  class="nav-link">Contagem</a>
+    <a href="#gallery"    class="nav-link">Galeria</a>
+    <a href="#map-section" class="nav-link">Local</a>
+    <a href="#rsvp"       class="nav-link">RSVP</a>
+  </div>
+</nav>
+ 
+<!-- ============================================================
+     HERO — ANIMAÇÃO DO ENVELOPE
+     ============================================================ -->
+<!--
+  Primeira experiência visual do site.
+  O usuário abre o convite rolando a página.
+-->
+<section id="hero" aria-label="Convite">
+  <div class="hero-sticky">
+
+    <!-- SITE POR TRÁS DO ENVELOPE -->
+    <div id="intro" class="hero-site" aria-label="Abertura do convite">
+      <div class="hero-site-inner">
+        <p class="intro-tag">Você está convidado</p>
+        <h1 class="intro-title">Nicolas <em>&</em> Phamyla</h1>
+        <p class="intro-verse">"Assim, eles já não são dois, mas uma só carne. Portanto, o que Deus ajuntou, não o separe o homem."</p>
+        <p class="intro-ref" style="margin-top:12px;">Mateus 19:6</p>
+      </div>
+    </div>
+
+    <!-- SOBREPOSIÇÃO DO ENVELOPE -->
+    <div class="envelope-wrap" id="envelopeWrap">
+      <div class="env-back" aria-hidden="true"></div>
+      <div class="env-front" aria-hidden="true"></div>
+      <div class="env-flap" id="envFlap" aria-hidden="true">
+        <div class="env-seal" aria-hidden="true">✦</div>
+      </div>
+    </div>
+
+    <!-- INDICADOR DE ROLAGEM -->
+    <div class="scroll-hint" id="scrollHint" aria-hidden="true">
+      <span>Role para abrir</span>
+      <div class="scroll-arrow"></div>
+    </div>
+
+  </div>
+</section>
+ 
+<!-- ============================================================
+     CONTAGEM REGRESSIVA
+     ============================================================ -->
+<!-- Seção da contagem regressiva. -->
+<section id="countdown">
+  <div class="reveal">
+    <p class="section-tag">Faltam</p>
+    <h2 class="section-title">O Grande <em>Dia</em></h2>
+  </div>
+  <div class="countdown-grid reveal reveal-delay-1">
+    <div class="cd-block">
+      <span class="cd-num" id="cd-days">--</span>
+      <span class="cd-label">Dias</span>
+    </div>
+    <div class="cd-block">
+      <span class="cd-num" id="cd-hours">--</span>
+      <span class="cd-label">Horas</span>
+    </div>
+    <div class="cd-block">
+      <span class="cd-num" id="cd-minutes">--</span>
+      <span class="cd-label">Minutos</span>
+    </div>
+    <div class="cd-block">
+      <span class="cd-num" id="cd-seconds">--</span>
+      <span class="cd-label">Segundos</span>
+    </div>
+  </div>
+</section>
+ 
+<!-- ============================================================
+     DETALHES
+     ============================================================ -->
+<!-- Seção com os detalhes do evento. -->
+<section id="details">
+  <div class="details-inner">
+    <div class="reveal">
+      <p class="section-tag" style="color:var(--gold);">Detalhes</p>
+      <h2 class="section-title" style="color:var(--ink);">Informações do <em style="color:var(--gold)">Evento</em></h2>
+    </div>
+    <div class="details-grid">
+      <div class="detail-cell reveal">
+        <span class="detail-icon">🗓</span>
+        <p class="detail-label">Data</p>
+        <p class="detail-value">31 de Outubro<br>de 2026</p>
+        <p class="detail-sub">Sábado</p>
+      </div>
+      <div class="detail-cell reveal reveal-delay-1">
+        <span class="detail-icon">⏰</span>
+        <p class="detail-label">Horário</p>
+        <p class="detail-value">17h00</p>
+        <p class="detail-sub">Cerimônia — 17h · Recepção — 19h</p>
+      </div>
+      <div class="detail-cell reveal reveal-delay-2">
+        <span class="detail-icon">📍</span>
+        <p class="detail-label">Local</p>
+        <p class="detail-value">Nome do Espaço</p>
+        <p class="detail-sub">Endereço, Cidade — Estado</p>
+      </div>
+      <div class="detail-cell reveal reveal-delay-3">
+        <span class="detail-icon">👔</span>
+        <p class="detail-label">Traje</p>
+        <p class="detail-value">Esporte Fino</p>
+        <p class="detail-sub">Cor a evitar: branco</p>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- ============================================================
+     GALERIA
+     ============================================================ -->
+<!-- Seção de fotos do casal. -->
+<section id="gallery">
+  <div class="gallery-header">
+    <div class="reveal">
+      <p class="section-tag">Memórias</p>
+      <h2 class="section-title">Nossa <em>História</em></h2>
+    </div>
+  </div>
+  <div class="gallery-grid">
+    <!-- Substitua os placeholders pelas suas fotos -->
+    <!-- Exemplo: <img src="foto1.jpg" alt="Descrição"> -->
+    <div class="gallery-item reveal">
+      <div class="gallery-placeholder"><span>📷</span><p>Foto 1</p></div>
+    </div>
+    <div class="gallery-item reveal reveal-delay-1">
+      <div class="gallery-placeholder"><span>📷</span><p>Foto 2</p></div>
+    </div>
+    <div class="gallery-item reveal reveal-delay-2">
+      <div class="gallery-placeholder"><span>📷</span><p>Foto 3</p></div>
+    </div>
+    <div class="gallery-item reveal reveal-delay-1">
+      <div class="gallery-placeholder"><span>📷</span><p>Foto 4</p></div>
+    </div>
+    <div class="gallery-item reveal reveal-delay-2">
+      <div class="gallery-placeholder"><span>📷</span><p>Foto 5</p></div>
+    </div>
+    <div class="gallery-item reveal reveal-delay-3">
+      <div class="gallery-placeholder"><span>📷</span><p>Foto 6</p></div>
+    </div>
+  </div>
+</section>
+ 
+<!-- Estrutura que mostra a foto ampliada quando alguma imagem é clicada. -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Foto ampliada">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Fechar">✕</button>
+  <img src="" alt="" id="lightboxImg">
+</div>
+ 
+<!-- ============================================================
+     MAPA
+     ============================================================ -->
+<!-- Seção do local com mapa. -->
+<section id="map-section">
+  <div class="map-inner">
+    <div class="reveal">
+      <p class="section-tag" style="color:var(--gold);">Como Chegar</p>
+      <h2 class="section-title" style="color:var(--ink);">O <em style="color:var(--gold)">Local</em></h2>
+    </div>
+    <div class="reveal reveal-delay-1">
+      <!--
+        INSTRUÇÕES: Substitua o src abaixo pelo embed do Google Maps do seu local.
+        No Google Maps: clique em "Compartilhar" → "Incorporar um mapa" → copie o <iframe src="...">
+      -->
+      <iframe
+        class="map-frame"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.1975492637556!2d-46.6520838!3d-23.5617152!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDMzJzQyLjIiUyA0NsKwMzknMDcuNSJX!5e0!3m2!1spt-BR!2sbr!4v1600000000000!5m2!1spt-BR!2sbr"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Local do casamento"
+      ></iframe>
+      <p class="map-address">
+        Nome do Espaço<br>
+        Endereço completo, Cidade — Estado
+      </p>
+      <a
+        href="https://maps.google.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="map-cta"
+      >
+        Abrir no Maps
+      </a>
+    </div>
+  </div>
+</section>
+ 
+<!-- ============================================================
+     RSVP
+     ============================================================ -->
+<!--
+  Formulário de confirmação.
+  No estado atual ele apenas valida e mostra uma mensagem de sucesso,
+  mas ainda não salva as respostas em banco ou planilha.
+-->
+<section id="rsvp">
+  <div class="reveal">
+    <p class="section-tag">Confirme sua Presença</p>
+    <h2 class="section-title">RSVP</h2>
+    <p style="font-size:12px;color:var(--muted);margin-top:-32px;margin-bottom:0;">
+      Confirme até <strong style="color:var(--gold)">01 de Outubro de 2026</strong>
+    </p>
+  </div>
+ 
+  <form class="rsvp-form reveal reveal-delay-1" id="rsvpForm" novalidate>
+ 
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="rsvp-name">Nome completo</label>
+        <input class="form-input" type="text" id="rsvp-name" name="name" placeholder="Seu nome" autocomplete="name" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="rsvp-email">E-mail</label>
+        <input class="form-input" type="email" id="rsvp-email" name="email" placeholder="seu@email.com" autocomplete="email" required>
+      </div>
+    </div>
+ 
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="rsvp-guests">Nº de acompanhantes</label>
+        <select class="form-select" id="rsvp-guests" name="guests">
+          <option value="0">Apenas eu</option>
+          <option value="1">+ 1 acompanhante</option>
+          <option value="2">+ 2 acompanhantes</option>
+          <option value="3">+ 3 acompanhantes</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="rsvp-confirm">Presença</label>
+        <select class="form-select" id="rsvp-confirm" name="confirm" required>
+          <option value="">Selecione</option>
+          <option value="yes">✓ Confirmo presença</option>
+          <option value="no">✗ Não poderei comparecer</option>
+        </select>
+      </div>
+    </div>
+ 
+    <div class="form-group">
+      <label class="form-label" for="rsvp-restrictions">Restrições alimentares (opcional)</label>
+      <textarea class="form-textarea" id="rsvp-restrictions" name="restrictions" placeholder="Ex: vegetariano, intolerância a lactose..."></textarea>
+    </div>
+ 
+    <div class="form-group">
+      <label class="form-label" for="rsvp-message">Deixe uma mensagem (opcional)</label>
+      <textarea class="form-textarea" id="rsvp-message" name="message" placeholder="Uma palavra carinhosa para os noivos..."></textarea>
+    </div>
+ 
+    <button type="submit" class="rsvp-submit">Confirmar Presença</button>
+ 
+  </form>
+ 
+  <div class="rsvp-success" id="rsvpSuccess" role="alert">
+    <div class="rsvp-success-icon">✦</div>
+    <h3>Obrigado!</h3>
+    <p>Sua presença foi confirmada.<br>Mal podemos esperar para celebrar com você!</p>
+  </div>
+ 
+</section>
+ 
+<!-- ============================================================
+     RODAPÉ
+     ============================================================ -->
+<!-- Rodapé do convite. -->
+<footer>
+  <p class="footer-names">Nicolas & Phamyla</p>
+  <p class="footer-date">31 · 10 · 2026</p>
+</footer>
+ 
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+/*
+  JAVASCRIPT
+  ------------------------------------------------------------
+  Aqui estão as interações da página:
+  - correção de altura em celular
+  - animação do envelope baseada no scroll
+  - contagem regressiva
+  - animação de entrada dos blocos
+  - lightbox da galeria
+  - controle do menu
+  - validação básica do RSVP
+*/
+/* ----------------------------------------
+   1. ALTURA REAL DA VIEWPORT (correção para celular)
+   ---------------------------------------- */
+/*
+  Em alguns celulares, 100vh não representa a altura visível real da tela.
+  Esta função calcula essa altura corretamente.
+*/
+function setVH() {
+  const vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+setVH();
+window.addEventListener('resize', setVH);
+ 
+/* ----------------------------------------
+   2. ENVELOPE — REVELAÇÃO DO SITE POR TRÁS
+   ----------------------------------------
+
+   linha do tempo do progresso (0 → 1):
+   ┌─────────────────────────────────────────────────────────┐
+   │ 0.00 → 0.38  aba abre                                  │
+   │ 0.08 → 0.78  topo do site sobe por trás do envelope    │
+   │ 0.58 → 0.88  envelope perde força e desaparece         │
+   └─────────────────────────────────────────────────────────┘
+   ---------------------------------------- */
+
+const hero       = document.getElementById('hero');
+const envWrap    = document.getElementById('envelopeWrap');
+const envFlap    = document.getElementById('envFlap');
+const heroSite   = document.getElementById('intro');
+const scrollHint = document.getElementById('scrollHint');
+
+/* auxiliar de interpolação linear */
+const lerp = (a, b, t) => a + (b - a) * Math.min(Math.max(t, 0), 1);
+
+/* mapeia um valor de [inMin,inMax] para [0,1], limitando o resultado */
+const norm = (val, inMin, inMax) => Math.min(Math.max((val - inMin) / (inMax - inMin), 0), 1);
+
+/* funções de aceleração/desaceleração */
+const easeInOut = t => t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+const easeOut   = t => 1 - (1-t)*(1-t);
+
+function onScroll() {
+  const scrolled   = window.scrollY;
+  const heroHeight = hero.offsetHeight - window.innerHeight;
+  const p          = Math.min(Math.max(scrolled / heroHeight, 0), 1);
+
+  /* ── FASE 1: A ABA ABRE ── */
+  const flapT     = easeInOut(norm(p, 0.00, 0.38));
+  const flapAngle = lerp(0, -188, flapT);
+  envFlap.style.transform = `rotateX(${flapAngle}deg)`;
+  envFlap.style.zIndex    = flapAngle < -90 ? '1' : '7';
+
+  /* ── FASE 2: O TOPO DO SITE SOBE POR TRÁS DO ENVELOPE ── */
+  const siteT     = easeOut(norm(p, 0.08, 0.78));
+  const siteY     = lerp(window.innerHeight * 0.38, 0, siteT);
+  const siteScale = lerp(0.98, 1, siteT);
+  heroSite.style.transform = `translateY(${siteY}px) scale(${siteScale})`;
+
+  /* ── FASE 3: O ENVELOPE SOME AOS POUCOS ── */
+  const fadeT      = easeInOut(norm(p, 0.58, 0.88));
+  const envOpacity = lerp(1, 0, fadeT);
+  const envScale   = lerp(1, 0.92, fadeT);
+  envWrap.style.transform = `translate(-50%, -50%) scale(${envScale})`;
+  envWrap.style.opacity   = envOpacity;
+
+  /* ── INDICADOR DE ROLAGEM ── */
+  scrollHint.style.opacity = p > 0.04 ? '0' : '1';
+  scrollHint.style.pointerEvents = p > 0.04 ? 'none' : 'all';
+}
+
+window.addEventListener('scroll', onScroll, { passive: true });
+onScroll(); // executa uma vez ao carregar
+
+/* ----------------------------------------
+   3. CONTAGEM REGRESSIVA
+   ---------------------------------------- */
+/*
+  Data e hora da cerimônia usada na contagem regressiva.
+  Se você mudar o horário do casamento, altere esta linha.
+*/
+const WEDDING_DATE = new Date('2026-10-31T17:00:00');
+ 
+/*
+  Atualiza a contagem regressiva a cada segundo.
+*/
+function updateCountdown() {
+  const now  = new Date();
+  const diff = WEDDING_DATE - now;
+ 
+  if (diff <= 0) {
+    document.getElementById('cd-days').textContent    = '00';
+    document.getElementById('cd-hours').textContent   = '00';
+    document.getElementById('cd-minutes').textContent = '00';
+    document.getElementById('cd-seconds').textContent = '00';
+    return;
+  }
+ 
+  const days    = Math.floor(diff / 86400000);
+  const hours   = Math.floor((diff % 86400000) / 3600000);
+  const minutes = Math.floor((diff % 3600000)  / 60000);
+  const seconds = Math.floor((diff % 60000)    / 1000);
+ 
+  const pad = n => String(n).padStart(2, '0');
+ 
+  document.getElementById('cd-days').textContent    = pad(days);
+  document.getElementById('cd-hours').textContent   = pad(hours);
+  document.getElementById('cd-minutes').textContent = pad(minutes);
+  document.getElementById('cd-seconds').textContent = pad(seconds);
+}
+ 
+updateCountdown();
+setInterval(updateCountdown, 1000);
+ 
+/* ----------------------------------------
+   4. REVELAÇÃO AO ROLAR
+   ---------------------------------------- */
+const revealEls = document.querySelectorAll('.reveal');
+ 
+/*
+  Observer que detecta quando um elemento entra na área visível da tela.
+  Quando entra, ele recebe a classe 'visible'.
+*/
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      revealObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.12 });
+ 
+revealEls.forEach(el => revealObserver.observe(el));
+ 
+/* ----------------------------------------
+   5. LIGHTBOX DA GALERIA
+   ---------------------------------------- */
+const lightbox      = document.getElementById('lightbox');
+const lightboxImg   = document.getElementById('lightboxImg');
+const lightboxClose = document.getElementById('lightboxClose');
+ 
+/*
+  Adiciona o clique de abrir foto ampliada nas imagens da galeria.
+  Observação: com os placeholders atuais, isso só funcionará quando você trocar por <img> reais.
+*/
+document.querySelectorAll('.gallery-item img').forEach(img => {
+  img.addEventListener('click', () => {
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightbox.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  });
 });
-
+ 
+/*
+  Fecha a visualização ampliada da foto.
+*/
+function closeLightbox() {
+  lightbox.classList.remove('active');
+  document.body.style.overflow = '';
+  lightboxImg.src = '';
+}
+ 
+lightboxClose.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+ 
+/* ----------------------------------------
+   6. NAVEGAÇÃO: some durante o hero e aparece depois
+   ---------------------------------------- */
+const navEl = document.getElementById('nav');
+ 
+/*
+  Controla quando o menu deve ficar escondido ou visível.
+*/
+const heroObserver = new IntersectionObserver((entries) => {
+  navEl.classList.toggle('hidden', entries[0].isIntersecting);
+}, { threshold: 0.05 });
+ 
+heroObserver.observe(hero);
+ 
+/* ----------------------------------------
+   7. FORMULÁRIO DE RSVP
+   ---------------------------------------- */
+const rsvpForm    = document.getElementById('rsvpForm');
+const rsvpSuccess = document.getElementById('rsvpSuccess');
+ 
+/*
+  Intercepta o envio do formulário.
+  Em vez de enviar para um servidor, ele apenas valida os campos e mostra a mensagem final.
+*/
+rsvpForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+ 
+  const name    = document.getElementById('rsvp-name').value.trim();
+  const email   = document.getElementById('rsvp-email').value.trim();
+  const confirm = document.getElementById('rsvp-confirm').value;
+ 
+  if (!name || !email || !confirm) {
+    /* destaque simples nos campos obrigatórios vazios */
+    [document.getElementById('rsvp-name'),
+     document.getElementById('rsvp-email'),
+     document.getElementById('rsvp-confirm')].forEach(el => {
+       if (!el.value.trim()) {
+         el.style.borderColor = '#c0392b';
+         el.focus();
+       }
+     });
+    return;
+  }
+ 
+  /* 
+    INTEGRAÇÃO: Aqui você pode enviar os dados para um backend,
+    Firebase, Formspree, etc.
+    Exemplo com Formspree:
+    
+    const data = new FormData(rsvpForm);
+    fetch('https://formspree.io/f/SEU_ID', { method:'POST', body: data });
+  */
+ 
+  rsvpForm.style.display = 'none';
+  rsvpSuccess.classList.add('visible');
+});
 </script>
-
+ 
 </body>
 </html>
+ 
